@@ -60,18 +60,30 @@ export var companies = [
   { ticker: "ABEV" },
 ];
 export function getData(req, res) {
-  const ticker = req.query.ticker.toUpperCase();
-  const company = companies.filter((c) => c.ticker == ticker)[0];
-  res.status(200).json(company);
+  try{
+    const ticker = req.query.ticker.toUpperCase();
+    const company = companies.filter((c) => c.ticker == ticker)[0];
+    res.status(200).json(company);
+  }
+  catch(e){
+    console.error(e)
+    res.status(500).json({message: "Error getting data"});
+  }
 }
 
 export async function updateData() {
-  for (let i = 0; i < companies.length; i++) {
-    const quote = await refreshStockQuote(companies[i].ticker);
-    companies[i].quote = quote;
-    // updateCompany(companies[i])
+  try{
+
+    for (let i = 0; i < companies.length; i++) {
+      const quote = await refreshStockQuote(companies[i].ticker);
+      companies[i].quote = quote;
+      // updateCompany(companies[i])
+    }
+    console.log("apiController.updateData() called at " + new Date(Date.now()));
   }
-  console.log("apiController.updateData() called at " + new Date(Date.now()));
+  catch(e){
+    console.log(e)
+  }
 }
 
 export async function updateProfile() {
@@ -86,7 +98,13 @@ export async function updateProfile() {
 }
 
 export async function getStockSymbols(req, res) {
-  res.json(companies);
+  try{
+    res.status(200).json(companies);
+  }
+  catch(e){
+    console.error(e)
+    res.status(500).json({message: "Error getting Symbols"})
+  }
 }
 
 async function refreshStockQuote(symbol) {
