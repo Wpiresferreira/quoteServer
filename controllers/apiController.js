@@ -79,7 +79,7 @@ export async function updateData() {
       const quote = await refreshStockQuote(companies[i].ticker);
       companies[i].quote = quote;
     }
-    marketNews = getMarketNews()
+    marketNews = await refreshMarketNews()
     console.log("apiController.updateData() called at " + new Date(Date.now()));
   }
   catch(e){
