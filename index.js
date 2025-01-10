@@ -35,6 +35,7 @@ app.use((req, res, next) => {
 // Routes
 app.get('/getquote', authenticateToken, apiController.getData);
 app.get("/symbols", authenticateToken, apiController.getStockSymbols);
+app.get("/market-news", authenticateToken, apiController.getMarketNews);
 
 
         

@@ -2,6 +2,8 @@ import "dotenv/config";
 
 const apiKey = process.env.API_KEY;
 
+export var marketNews = []
+
 export var companies = [
   { ticker: "AAPL" },
   { ticker: "NVDA" },
@@ -73,12 +75,11 @@ export function getData(req, res) {
 
 export async function updateData() {
   try{
-
     for (let i = 0; i < companies.length; i++) {
       const quote = await refreshStockQuote(companies[i].ticker);
       companies[i].quote = quote;
-      // updateCompany(companies[i])
     }
+    marketNews = getMarketNews()
     console.log("apiController.updateData() called at " + new Date(Date.now()));
   }
   catch(e){
@@ -95,6 +96,7 @@ export async function updateProfile() {
   console.log(
     "apiController.updateProfile() called at " + new Date(Date.now())
   );
+  getMarketNews()
 }
 
 export async function getStockSymbols(req, res) {
@@ -106,6 +108,15 @@ export async function getStockSymbols(req, res) {
     res.status(500).json({message: "Error getting Symbols"})
   }
 }
+export async function getMarketNews(req, res) {
+  try{
+    res.status(200).json(marketNews);
+  }
+  catch(e){
+    console.error(e)
+    res.status(500).json({message: "Error getting Market News"})
+  }
+}
 
 async function refreshStockQuote(symbol) {
   const apiUrl = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
@@ -115,6 +126,13 @@ async function refreshStockQuote(symbol) {
 }
 export async function getStockProfile(symbol) {
   const apiUrl = `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${apiKey}`;
+  const data = await fetch(apiUrl);
+  const posts = await data.json();
+  return posts;
+}
+
+export async function getMarketNews() {
+  const apiUrl = `https://finnhub.io/api/v1/news?category=general&token=${apiKey}`;
   const data = await fetch(apiUrl);
   const posts = await data.json();
   return posts;
