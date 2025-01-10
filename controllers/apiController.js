@@ -93,10 +93,11 @@ export async function updateProfile() {
     companies[i].profile = profile;
     // updateCompany(companies[i])
   }
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:955844538.
+  marketNews = refreshMarketNews()
   console.log(
     "apiController.updateProfile() called at " + new Date(Date.now())
   );
-  getMarketNews()
 }
 
 export async function getStockSymbols(req, res) {
@@ -131,7 +132,7 @@ export async function getStockProfile(symbol) {
   return posts;
 }
 
-export async function getMarketNews() {
+export async function refreshMarketNews() {
   const apiUrl = `https://finnhub.io/api/v1/news?category=general&token=${apiKey}`;
   const data = await fetch(apiUrl);
   const posts = await data.json();
